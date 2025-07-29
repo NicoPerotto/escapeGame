@@ -15,34 +15,109 @@
     </header>
 
     <main>
-        <section id="create-game" class="game-section">
-            <h2>Crear Sala</h2>
-            <div class="input-group">
-                <label for="num-players">Cantidad de Jugadores (1-8):</label>
-                <input type="number" id="num-players" min="1" max="8" value="4">
-            </div>
-            <div class="input-group">
-                <label for="game-duration">Duración del Juego (minutos):</label>
-                <input type="number" id="game-duration" min="5" max="60" value="15">
-            </div>
-            <button id="generate-code-btn">Generar Código de Sala</button>
-            <div class="code-display" id="generated-code-display">
-                <p>Tu código de sala: <span id="generated-code"></span></p>
-                <button id="copy-code-btn">Copiar Código</button>
-            </div>
+        <section id="start-screen" class="game-section">
+            <h2>Bienvenido</h2>
+            <p>Elige tu rol:</p>
+            <button id="creator-mode-btn">Crear Sala</button>
+            <button id="player-mode-btn">Unirse a Sala</button>
         </section>
 
-        <section id="join-game" class="game-section">
-            <h2>Unirse a Sala</h2>
+        <section id="creator-section" class="game-section" style="display:none;">
+            <h2>Crear Nueva Sala (Rol: Creador)</h2>
             <div class="input-group">
-                <label for="room-code-input">Ingresa el Código de Sala:</label>
-                <input type="text" id="room-code-input" maxlength="4" placeholder="XXXX">
+                <label for="creator-num-players">Cantidad de Jugadores (2-8):</label>
+                <input type="number" id="creator-num-players" min="2" max="8" value="4">
             </div>
-            <button id="join-room-btn">Unirse</button>
-            <div class="game-info" id="joined-game-info">
-                <p>Jugadores esperados: <span id="info-players"></span></p>
-                <p>Tiempo restante: <span id="info-time-left"></span></p>
+            <div class="input-group">
+                <label for="creator-game-duration">Duración del Juego (minutos):</label>
+                <input type="number" id="creator-game-duration" min="5" max="60" value="15">
+            </div>
+
+            <div class="selector-group">
+                <h3>Puzzles iniciales del Creador (3 al azar):</h3>
+                <div class="checkbox-container" id="creator-puzzle-display">
+                    </div>
+            </div>
+
+            <div class="selector-group">
+                <h3>Soluciones iniciales del Creador (3 al azar):</h3>
+                <div class="checkbox-container" id="creator-solution-display">
+                    </div>
+            </div>
+
+            <button id="generate-initial-code-btn">Generar Código de Sala</button>
+            <div class="code-display" id="creator-generated-code-display" style="display:none;">
+                <p>Código para el Jugador 2: <span id="creator-generated-code"></span></p>
+                <p>Número de control: <span id="creator-control-number" style="font-weight: bold; color: #E65100;"></span></p>
+                <p class="instructions">¡Comparte el código y el número de control con el Jugador 2!</p>
+                <button id="copy-creator-code-btn">Copiar Código y Control</button>
+            </div>
+            <button class="back-to-start-btn">Volver</button>
+        </section>
+
+        <div id="dynamic-player-section-container">
+            </div>
+
+        <template id="player-section-template">
+            <section class="game-section player-role-section">
+                <h2>Rol: Jugador <span class="current-player-display-id"></span></h2>
+                <div class="input-group">
+                    <label for="player-room-code-input">Código de Sala Recibido:</label>
+                    <input type="text" class="player-room-code-input" maxlength="6" placeholder="XXXXXX">
                 </div>
+                <div class="input-group">
+                    <label for="player-control-number-input">Número de Control (¡Pregúntale al creador!):</label>
+                    <input type="number" class="player-control-number-input" min="0" max="3">
+                </div>
+
+                <p>ID asignado para generar el siguiente código: <span class="player-actual-id" style="font-weight: bold;"></span></p>
+
+                <div class="selector-group">
+                    <h3>Puzzles Acumulados (binario): <span class="accumulated-puzzle-mask" style="font-family: monospace;"></span></h3>
+                    <h3>Soluciones Acumuladas (binario): <span class="accumulated-solution-mask" style="font-family: monospace;"></span></h3>
+                </div>
+
+                <div class="selector-group player-selectable-puzzles">
+                    <h3>Selecciona tus Puzzles (3 al azar o según compensación):</h3>
+                    <div class="checkbox-container player-puzzle-checkboxes"></div>
+                </div>
+
+                <div class="selector-group player-selectable-solutions">
+                    <h3>Selecciona tus Soluciones (3 al azar o según compensación):</h3>
+                    <div class="checkbox-container player-solution-checkboxes"></div>
+                </div>
+
+                <button class="process-player-code-btn">Procesar Código y Generar Siguiente</button>
+                <div class="code-display" style="display:none;">
+                    <p>Código para Jugador <span class="next-player-display-id"></span>: <span class="generated-player-code"></span></p>
+                    <p class="instructions">¡Copia y pasa este código al siguiente jugador o al Creador!</p>
+                    <button class="copy-player-generated-code-btn">Copiar Código</button>
+                </div>
+                <button class="back-to-start-btn">Volver</button>
+            </section>
+        </template>
+
+        <section id="creator-final-check" class="game-section" style="display:none;">
+            <h2>Validar Código Final (Rol: Creador)</h2>
+            <p>Ingresa el código final que te entregó el último jugador:</p>
+            <div class="input-group">
+                <label for="final-room-code-input">Código Final Recibido:</label>
+                <input type="text" id="final-room-code-input" maxlength="6" placeholder="XXXXXX">
+            </div>
+            <div class="input-group">
+                <label for="final-control-number-input">Número de Control Original:</label>
+                <input type="number" id="final-control-number-input" min="0" max="3">
+            </div>
+            <button id="validate-final-code-btn">Validar Código</button>
+            <div class="game-info" id="final-validation-info" style="display:none;">
+                <p>Estado de Validación: <span id="validation-result" style="font-weight: bold;"></span></p>
+                <p>Jugadores Decodificados: <span id="final-info-players"></span> (Original: <span id="original-info-players"></span>)</p>
+                <p>Minuto Final Decodificado: <span id="final-info-end-minute"></span> (Original: <span id="original-info-end-minute"></span>)</p>
+                <p>Máscara de Puzzles Final: <span id="final-info-puzzle-mask" style="font-family: monospace;"></span></p>
+                <p>Máscara de Soluciones Final: <span id="final-info-solution-mask" style="font-family: monospace;"></span></p>
+                <p>Jugador que generó este código: <span id="final-info-current-player-id"></span></p>
+            </div>
+            <button class="back-to-start-btn">Volver</button>
         </section>
     </main>
 
