@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle en Equipo Offline</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#2196F3"/>
+</head>
+<body>
+    <header>
+        <h1>Puzzle en Equipo Offline</h1>
+    </header>
+
+    <main>
+        <section id="create-game" class="game-section">
+            <h2>Crear Sala</h2>
+            <div class="input-group">
+                <label for="num-players">Cantidad de Jugadores (1-8):</label>
+                <input type="number" id="num-players" min="1" max="8" value="4">
+            </div>
+            <div class="input-group">
+                <label for="game-duration">Duración del Juego (minutos):</label>
+                <input type="number" id="game-duration" min="5" max="60" value="15">
+            </div>
+            <button id="generate-code-btn">Generar Código de Sala</button>
+            <div class="code-display" id="generated-code-display">
+                <p>Tu código de sala: <span id="generated-code"></span></p>
+                <button id="copy-code-btn">Copiar Código</button>
+            </div>
+        </section>
+
+        <section id="join-game" class="game-section">
+            <h2>Unirse a Sala</h2>
+            <div class="input-group">
+                <label for="room-code-input">Ingresa el Código de Sala:</label>
+                <input type="text" id="room-code-input" maxlength="4" placeholder="XXXX">
+            </div>
+            <button id="join-room-btn">Unirse</button>
+            <div class="game-info" id="joined-game-info">
+                <p>Jugadores esperados: <span id="info-players"></span></p>
+                <p>Tiempo restante: <span id="info-time-left"></span></p>
+                </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Tu Juego de Puzzles</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script src="service-worker-registration.js"></script>
+</body>
+</html>
